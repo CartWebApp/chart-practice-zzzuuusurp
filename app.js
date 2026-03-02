@@ -43,18 +43,18 @@ renderBtn.addEventListener("click", () => {
 
 // --- Students: you’ll edit / extend these functions ---
 function buildConfig(type, { year, genre, metric }) {
-  if (type === "bar") return barBygenre(year, metric);
-  if (type === "line") return lineOverTime(genre, ["trips", "revenueUSD"]);
+  if (type === "bar") return barByGenre(year, metric);
+  if (type === "line") return lineOverTime(genre, ["reviewScore", "revenueUSD"]);
   if (type === "scatter") return scatterTripsVsTemp(genre);
   if (type === "doughnut") return doughnutMemberVsCasual(year, genre);
-  if (type === "radar") return radarComparegenres(year);
-  return barBygenre(year, metric);
+  if (type === "radar") return radarCompareGenres(year);
+  return barByGenre(year, metric);
 }
 
-// Task A: BAR — compare genres for a given year
-function barBygenre(year, metric) {
+// Task A: BAR — compare Genres for a given year
+function barByGenre(year, metric) {
   const rows = chartData.filter(r => r.year === year);
-
+  console.log(year, metric);
   const labels = rows.map(r => r.genre);
   const values = rows.map(r => r[metric]);
 
@@ -70,17 +70,17 @@ function barBygenre(year, metric) {
     options: {
       responsive: true,
       plugins: {
-        title: { display: true, text: `genre comparison (${year})` }
+        title: { display: true, text: `Genre comparison (${year})` }
       },
       scales: {
         y: { title: { display: true, text: metric } },
-        x: { title: { display: true, text: "genre" } }
+        x: { title: { display: true, text: "Genre" } }
       }
     }
   };
 }
 
-// Task B: LINE — trend over time for one genre (2 datasets)
+// Task B: LINE — trend over time for one Genre (2 datasets)
 function lineOverTime(genre, metrics) {
   const rows = chartData.filter(r => r.genre === genre);
 
@@ -107,27 +107,27 @@ function lineOverTime(genre, metrics) {
   };
 }
 
-// SCATTER — relationship between temperature and trips
+// SCATTER — relationship between review score and revenue
 function scatterTripsVsTemp(genre) {
   const rows = chartData.filter(r => r.genre === genre);
 
-  const points = rows.map(r => ({ x: r.tempC, y: r.trips }));
+  const points = rows.map(r => ({ x: r.reviewScore, y: r.revenueUSD }));
 
   return {
     type: "scatter",
     data: {
       datasets: [{
-        label: `Trips vs Temp (${genre})`,
+        label: `Review Score vs Revenue (${genre})`,
         data: points
       }]
     },
     options: {
       plugins: {
-        title: { display: true, text: `Does temperature affect trips? (${genre})` }
+        title: { display: true, text: `Do review scores affect revenue? (${genre})` }
       },
       scales: {
-        x: { title: { display: true, text: "Temperature (C)" } },
-        y: { title: { display: true, text: "Trips" } }
+        x: { title: { display: true, text: "Review Score (Out of 100)" } },
+        y: { title: { display: true, text: "Revenue" } }
       }
     }
   };
@@ -154,11 +154,11 @@ function doughnutMemberVsCasual(year, genre) {
   };
 }
 
-// RADAR — compare genres across multiple metrics for one year
-function radarComparegenres(year) {
+// RADAR — compare Genres across multiple metrics for one year
+function radarCompareGenres(year) {
   const rows = chartData.filter(r => r.year === year);
-
-  const metrics = ["trips", "revenueUSD", "avgDurationMin", "incidents"];
+  
+  const metrics = ["priceUSD", "revenueUSD", "reviewScore", "esports"];
   const labels = metrics;
 
   const datasets = rows.map(r => ({
