@@ -18,7 +18,6 @@ const genres = [...new Set(chartData.map(r => r.genre))];
 
 years.forEach(m => yearSelect.add(new Option(m, m)));
 genres.forEach(h => genreSelect.add(new Option(h, h)));
-
 yearSelect.value = years[0];
 genreSelect.value = genres[0];
 
@@ -28,7 +27,7 @@ dataPreview.textContent = JSON.stringify(chartData.slice(0, 6), null, 2);
 // --- Main render ---
 renderBtn.addEventListener("click", () => {
   const chartType = chartTypeSelect.value;
-  const year = yearSelect.value;
+  const year = Number(yearSelect.value);
   const genre = genreSelect.value;
   const metric = metricSelect.value;
 
@@ -53,11 +52,11 @@ function buildConfig(type, { year, genre, metric }) {
 
 // Task A: BAR — compare Genres for a given year
 function barByGenre(year, metric) {
-  const rows = chartData.filter(r => r.year === year);
-  console.log(year, metric);
+  
+  const rows = chartData.filter(r => r.year === Number(year));
+
   const labels = rows.map(r => r.genre);
   const values = rows.map(r => r[metric]);
-
   return {
     type: "bar",
     data: {
@@ -133,18 +132,21 @@ function scatterTripsVsTemp(genre) {
   };
 }
 
-// DOUGHNUT — member vs casual share for one genre + year
+// DOUGHNUT — revenue vs price for one genre + year
 function doughnutMemberVsCasual(year, genre) {
-  const row = chartData.find(r => r.year === year && r.genre === genre);
+  const row = chartData.find(r => r.year === Number(year) && r.genre === genre);
+  console.log(year, genre);
+  console.log(typeof year);
 
-  const member = Math.round(row.memberShare * 100);
-  const casual = 100 - member;
+  const units = row.unitsM; 
+  const reviewScore = row.reviewScore;
 
+  console.log(units, reviewScore);
   return {
     type: "doughnut",
     data: {
-      labels: ["Members (%)", "Casual (%)"],
-      datasets: [{ label: "Rider mix", data: [member, casual] }]
+      labels: [`Review Score (Out of 100)`, "Units Sold (Million)"],
+      datasets: [{ label: "Rider mix", data: [units, reviewScore] }]
     },
     options: {
       plugins: {
